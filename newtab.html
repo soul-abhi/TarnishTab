@@ -11,6 +11,8 @@
 </head>
 <body>
 
+  <div id="wallpaper" class="wallpaper" aria-hidden="true"></div>
+
   <div class="page">
 
     <section class="tasks todo-box" aria-label="Tasks">
@@ -38,6 +40,32 @@
       <button id="restoreLinksBtn" class="restore-links" type="button" hidden>Restore removed bookmarks</button>
     </section>
 
+  </div>
+
+  <div class="wallpaper-control">
+    <div id="wallpaperPanel" class="wallpaper-panel" role="dialog" aria-label="Wallpaper" hidden>
+      <h2 class="wallpaper-title">Wallpaper</h2>
+      <p class="wallpaper-hint">Pick an image, GIF or video from your computer, or paste a link.</p>
+
+      <label class="wallpaper-btn wallpaper-file">
+        Choose from computer
+        <input id="wallpaperFile" type="file" accept="image/*,video/mp4,video/webm,video/ogg" hidden>
+      </label>
+
+      <form id="wallpaperUrlForm" class="wallpaper-url" autocomplete="off">
+        <input id="wallpaperUrl" type="url" placeholder="https://example.com/wallpaper.jpg" aria-label="Wallpaper link">
+        <button class="wallpaper-btn" type="submit">Apply</button>
+      </form>
+
+      <p id="wallpaperStatus" class="wallpaper-status" role="status"></p>
+
+      <div class="wallpaper-actions">
+        <button id="wallpaperDim" class="wallpaper-btn ghost" type="button" aria-pressed="false">Dim</button>
+        <button id="wallpaperReset" class="wallpaper-btn ghost" type="button">Reset to default</button>
+      </div>
+    </div>
+
+    <button id="wallpaperToggle" class="wallpaper-toggle" type="button" aria-expanded="false" aria-controls="wallpaperPanel" title="Change wallpaper (Shift+W)">Wallpaper</button>
   </div>
 
   <script src="js/data.js"></script>

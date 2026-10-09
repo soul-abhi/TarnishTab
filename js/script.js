@@ -265,6 +265,7 @@ const DRAFT_KEY = "taskDraft";
 
 document.addEventListener("keydown", (event) => {
   if (event.key !== "Enter" || !event.shiftKey) return;
+  if (event.target.closest?.(".wallpaper-control")) return;
   if (event.ctrlKey || event.altKey || event.metaKey || event.isComposing) return;
   event.preventDefault();
   try {
@@ -280,7 +281,7 @@ document.addEventListener("keydown", (event) => {
   }
   if (event.key.toLowerCase() !== "k" || !event.shiftKey) return;
   if (event.ctrlKey || event.altKey || event.metaKey || event.isComposing) return;
-  if (document.activeElement === taskInput) return;
+  if (event.target.closest?.("input, textarea, [contenteditable]")) return;
 
   const focused = document.activeElement?.closest?.("#taskList .task");
   const id = focused ? Number(focused.dataset.id) : null;
@@ -301,11 +302,228 @@ function restoreDraft() {
   } catch {}
 }
 
+const WALLPAPER_KEY = "wallpaper";
+const WALLPAPER_DB = "tarnishtab";
+const WALLPAPER_STORE = "files";
+const VIDEO_EXT = /\.(mp4|webm|ogv|ogg|mov|m4v)(\?|#|$)/i;
+
+const wallpaperLayer = document.getElementById("wallpaper");
+const wallpaperPanel = document.getElementById("wallpaperPanel");
+const wallpaperToggle = document.getElementById("wallpaperToggle");
+const wallpaperFile = document.getElementById("wallpaperFile");
+const wallpaperUrlForm = document.getElementById("wallpaperUrlForm");
+const wallpaperUrl = document.getElementById("wallpaperUrl");
+const wallpaperStatus = document.getElementById("wallpaperStatus");
+const wallpaperDim = document.getElementById("wallpaperDim");
+const wallpaperReset = document.getElementById("wallpaperReset");
+
+let wallpaper = { source: "default", dim: false };
+let wallpaperObjectUrl = null;
+
+function openWallpaperDb() {
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open(WALLPAPER_DB, 1);
+    request.onupgradeneeded = () => request.result.createObjectStore(WALLPAPER_STORE);
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = () => reject(request.error);
+  });
+}
+
+async function wallpaperDbRun(mode, action) {
+  const db = await openWallpaperDb();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(WALLPAPER_STORE, mode);
+    const request = action(tx.objectStore(WALLPAPER_STORE));
+    tx.oncomplete = () => { db.close(); resolve(request.result); };
+    tx.onerror = () => { db.close(); reject(tx.error); };
+  });
+}
+
+const readWallpaperFile = () => wallpaperDbRun("readonly", (store) => store.get(WALLPAPER_KEY));
+const writeWallpaperFile = (blob) => wallpaperDbRun("readwrite", (store) => store.put(blob, WALLPAPER_KEY));
+const clearWallpaperFile = () => wallpaperDbRun("readwrite", (store) => store.delete(WALLPAPER_KEY));
+
+function setWallpaperStatus(message, isError = false) {
+  wallpaperStatus.textContent = message;
+  wallpaperStatus.classList.toggle("error", isError);
+}
+
+function wallpaperElement(src, isVideo) {
+  return new Promise((resolve, reject) => {
+    const el = document.createElement(isVideo ? "video" : "img");
+    if (isVideo) {
+      Object.assign(el, { muted: true, loop: true, autoplay: true, playsInline: true });
+      el.addEventListener("loadeddata", () => resolve(el), { once: true });
+    } else {
+      el.alt = "";
+      el.addEventListener("load", () => resolve(el), { once: true });
+    }
+    el.addEventListener("error", () => reject(new Error("load failed")), { once: true });
+    el.src = src;
+  });
+}
+
+async function showWallpaper(src, isVideo) {
+  const el = await wallpaperElement(src, isVideo);
+  wallpaperLayer.replaceChildren(el);
+  if (isVideo) el.play().catch(() => {});
+}
+
+function clearWallpaperLayer() {
+  wallpaperLayer.replaceChildren();
+  if (wallpaperObjectUrl) {
+    URL.revokeObjectURL(wallpaperObjectUrl);
+    wallpaperObjectUrl = null;
+  }
+}
+
+function applyDim() {
+  wallpaperLayer.classList.toggle("dim", wallpaper.dim);
+  wallpaperDim.setAttribute("aria-pressed", String(wallpaper.dim));
+}
+
+async function renderWallpaper() {
+  applyDim();
+  if (wallpaper.source === "file") {
+    const blob = await readWallpaperFile().catch(() => null);
+    if (!blob) return clearWallpaperLayer();
+    const objectUrl = URL.createObjectURL(blob);
+    try {
+      await showWallpaper(objectUrl, blob.type.startsWith("video/"));
+      if (wallpaperObjectUrl) URL.revokeObjectURL(wallpaperObjectUrl);
+      wallpaperObjectUrl = objectUrl;
+    } catch {
+      URL.revokeObjectURL(objectUrl);
+      clearWallpaperLayer();
+    }
+  } else if (wallpaper.source === "url" && wallpaper.url) {
+    await showWallpaper(wallpaper.url, wallpaper.video).catch(() => clearWallpaperLayer());
+  } else {
+    clearWallpaperLayer();
+  }
+}
+
+function saveWallpaper() {
+  saveState(WALLPAPER_KEY, wallpaper);
+}
+
+wallpaperFile.addEventListener("change", async () => {
+  const file = wallpaperFile.files[0];
+  wallpaperFile.value = "";
+  if (!file) return;
+  const isVideo = file.type.startsWith("video/");
+  if (!isVideo && !file.type.startsWith("image/")) {
+    setWallpaperStatus("That file is not an image or video.", true);
+    return;
+  }
+  setWallpaperStatus("Loading...");
+  const objectUrl = URL.createObjectURL(file);
+  try {
+    await showWallpaper(objectUrl, isVideo);
+  } catch {
+    URL.revokeObjectURL(objectUrl);
+    setWallpaperStatus("This file could not be displayed.", true);
+    return;
+  }
+  if (wallpaperObjectUrl) URL.revokeObjectURL(wallpaperObjectUrl);
+  wallpaperObjectUrl = objectUrl;
+  try {
+    await writeWallpaperFile(file);
+    wallpaper = { source: "file", name: file.name, dim: wallpaper.dim };
+    saveWallpaper();
+    setWallpaperStatus(`Using ${file.name}`);
+  } catch {
+    setWallpaperStatus("Shown for now, but it could not be saved.", true);
+  }
+});
+
+wallpaperUrlForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  let parsed;
+  try {
+    parsed = new URL(wallpaperUrl.value.trim());
+  } catch {
+    setWallpaperStatus("Enter a full link starting with https://", true);
+    return;
+  }
+  if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
+    setWallpaperStatus("Only http and https links are supported.", true);
+    return;
+  }
+  const isVideo = VIDEO_EXT.test(parsed.pathname);
+  setWallpaperStatus("Loading...");
+  try {
+    await showWallpaper(parsed.href, isVideo);
+  } catch {
+    setWallpaperStatus("Could not load that link. Check that it points directly to an image or video.", true);
+    return;
+  }
+  if (wallpaperObjectUrl) {
+    URL.revokeObjectURL(wallpaperObjectUrl);
+    wallpaperObjectUrl = null;
+  }
+  clearWallpaperFile().catch(() => {});
+  wallpaper = { source: "url", url: parsed.href, video: isVideo, dim: wallpaper.dim };
+  saveWallpaper();
+  wallpaperUrl.value = "";
+  setWallpaperStatus("Wallpaper updated.");
+});
+
+wallpaperDim.addEventListener("click", () => {
+  wallpaper.dim = !wallpaper.dim;
+  applyDim();
+  saveWallpaper();
+});
+
+wallpaperReset.addEventListener("click", () => {
+  clearWallpaperLayer();
+  clearWallpaperFile().catch(() => {});
+  wallpaper = { source: "default", dim: false };
+  applyDim();
+  saveWallpaper();
+  setWallpaperStatus("Back to the default wallpaper.");
+});
+
+function setWallpaperPanel(open) {
+  wallpaperPanel.hidden = !open;
+  wallpaperToggle.setAttribute("aria-expanded", String(open));
+  if (open) {
+    setWallpaperStatus(wallpaper.source === "file" && wallpaper.name ? `Using ${wallpaper.name}` : "");
+    wallpaperUrl.focus();
+  }
+}
+
+wallpaperToggle.addEventListener("click", () => setWallpaperPanel(wallpaperPanel.hidden));
+
+document.addEventListener("click", (event) => {
+  if (wallpaperPanel.hidden) return;
+  if (event.target.closest(".wallpaper-control")) return;
+  setWallpaperPanel(false);
+});
+
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && !wallpaperPanel.hidden) {
+    setWallpaperPanel(false);
+    wallpaperToggle.focus();
+    return;
+  }
+  if (event.key.toLowerCase() !== "w" || !event.shiftKey) return;
+  if (event.ctrlKey || event.altKey || event.metaKey || event.isComposing) return;
+  if (event.target.closest?.("input, textarea, [contenteditable]")) return;
+  event.preventDefault();
+  setWallpaperPanel(wallpaperPanel.hidden);
+});
+
 async function init() {
-  const [storedTasks, storedRemoved] = await Promise.all([
+  const [storedTasks, storedRemoved, storedWallpaper] = await Promise.all([
     loadState("tasks"),
-    loadState("removedBookmarks")
+    loadState("removedBookmarks"),
+    loadState(WALLPAPER_KEY)
   ]);
+  if (storedWallpaper && typeof storedWallpaper === "object") {
+    wallpaper = { ...wallpaper, ...storedWallpaper };
+  }
+  renderWallpaper();
   tasks = Array.isArray(storedTasks) ? storedTasks : [];
   removedBookmarks = new Set(Array.isArray(storedRemoved) ? storedRemoved : []);
   renderLinks();
