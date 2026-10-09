@@ -2,7 +2,7 @@
 
 <img src="assets/Icon-64.png" alt="TarnishTab" width="64" height="64">
 
-# TarnishTab
+# TarnishTab ||GIVE A STAR
 
 A fast, keyboard-first New Tab page for Chromium browsers and Firefox.
 Tasks, quick-saved sources and bookmarks in one place, on your own wallpaper.
