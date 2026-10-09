@@ -1,8 +1,8 @@
 <div align="center">
 
-<img src="assets/Icon-64.png" alt="Custom New Tab" width="64" height="64">
+<img src="assets/Icon-64.png" alt="TarnishTab" width="64" height="64">
 
-# Custom New Tab
+# TarnishTab
 
 A fast, keyboard-first New Tab page for Chromium browsers and Firefox.
 Tasks, quick-saved sources and bookmarks in one place, on your own wallpaper.
@@ -26,7 +26,7 @@ Tasks, quick-saved sources and bookmarks in one place, on your own wallpaper.
 
 ## Overview
 
-Custom New Tab replaces the default New Tab page with a clean three-column
+TarnishTab replaces the default New Tab page with a clean three-column
 workspace. It is built with plain HTML, CSS and JavaScript on Manifest V3,
 has no build step and no third-party dependencies, and the same set of files
 runs in Chrome, Edge, Brave, Vivaldi, Arc and Firefox.
@@ -118,7 +118,7 @@ the Downloads library. If it clashes, rebind quick-save from the page above.
    - Brave: `brave://extensions`
    - Edge: `edge://extensions`
 2. Enable **Developer mode**.
-3. Click **Load unpacked** and select the `custom-new-tab` folder.
+3. Click **Load unpacked** and select the `tarnishtab` folder.
 4. Open a new tab.
 
 Chrome may show a warning about the Firefox-specific manifest keys
@@ -182,14 +182,13 @@ const BOOKMARKS = [
   are stored under the `removedBookmarks` key and can be brought back with
   **Restore removed bookmarks**.
 
-The current list was generated from a LumiList export
-(`lumilist-bookmark-portability`). To refresh it, export again and replace
-the `BOOKMARKS` array with the entries whose status is `active`.
+The current list was generated from a bookmark export. To refresh it,
+export again and replace the `BOOKMARKS` array with the active entries.
 
 ## Project Structure
 
 ```text
-custom-new-tab/
+tarnishtab/
 ├── manifest.json        Extension manifest, New Tab override, shortcuts
 ├── newtab.html          Page markup
 ├── css/

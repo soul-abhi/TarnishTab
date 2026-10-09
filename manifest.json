@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "Custom New Tab",
+  "name": "TarnishTab",
   "version": "2.1.0",
   "description": "A minimal New Tab page: add tasks by typing and pressing Enter, bookmark links on a custom background, and Ctrl+Shift+Y to quick-save the active site.",
   "permissions": [
@@ -39,7 +39,7 @@
   },
   "browser_specific_settings": {
     "gecko": {
-      "id": "custom-new-tab@lumilist",
+      "id": "tarnishtab@tarnishtab",
       "strict_min_version": "121.0"
     }
   }
