@@ -1,0 +1,46 @@
+{
+  "manifest_version": 3,
+  "name": "Custom New Tab",
+  "version": "2.1.0",
+  "description": "A minimal New Tab page: add tasks by typing and pressing Enter, bookmark links on a custom background, and Ctrl+Shift+Y to quick-save the active site.",
+  "permissions": [
+    "storage",
+    "tabs"
+  ],
+  "background": {
+    "service_worker": "js/background.js",
+    "scripts": [
+      "js/background.js"
+    ]
+  },
+  "commands": {
+    "quick-save": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+Y",
+        "mac": "Command+Shift+Y"
+      },
+      "description": "Save the active site to the New Tab page"
+    },
+    "focus-task": {
+      "suggested_key": {
+        "default": "Alt+Shift+T",
+        "mac": "Alt+Shift+T"
+      },
+      "description": "On the New Tab page, move the cursor from the address bar to the task box"
+    }
+  },
+  "chrome_url_overrides": {
+    "newtab": "newtab.html"
+  },
+  "icons": {
+    "16": "assets/Icon-16.png",
+    "48": "assets/Icon-48.png",
+    "64": "assets/Icon-64.png"
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "custom-new-tab@lumilist",
+      "strict_min_version": "121.0"
+    }
+  }
+}

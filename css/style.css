@@ -1,0 +1,243 @@
+*,
+*::before,
+*::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  min-height: 100vh;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  color: #fff;
+  background: url("../assets/bg.jpg") center / cover no-repeat fixed, #0b0f1e;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+.page {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 48px 24px 96px;
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1.15fr);
+  gap: 40px;
+  align-items: start;
+}
+
+@property --todo-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+.todo-box {
+  position: relative;
+  border-radius: 0;
+  padding: 42px 38px 38px;
+  min-height: 760px;
+  background: rgba(0, 0, 0, 0.18);
+  -webkit-backdrop-filter: blur(3px);
+  backdrop-filter: blur(3px);
+  color: #fff;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.85);
+}
+.todo-box::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  padding: 2px;
+  background: conic-gradient(from var(--todo-angle),
+    #ff0040, #ff8a00, #ffe600, #2bff88, #00c8ff, #6a5cff, #ff00d4, #ff0040);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: todo-spin 6s linear infinite;
+  pointer-events: none;
+}
+@keyframes todo-spin {
+  to { --todo-angle: 360deg; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .todo-box::before { animation: none; }
+}
+
+.todo-box .section-title {
+  font-size: 28px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin-bottom: 20px;
+}
+
+.task-form input {
+  width: 100%;
+  padding: 14px 16px;
+  font-family: inherit;
+  font-size: 15px;
+  color: #fff;
+  text-shadow: inherit;
+  background: rgba(0, 0, 0, 0.35);
+  border: none;
+  border-radius: 0;
+  outline: none;
+  transition: background 200ms ease;
+}
+.task-form input::placeholder { color: #fff; }
+.task-form input:focus { background: rgba(0, 0, 0, 0.5); }
+
+.todo-heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin: 32px 0 8px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #fff;
+}
+.todo-count {
+  font-size: 12px;
+  letter-spacing: 0;
+  font-variant-numeric: tabular-nums;
+  color: #fff;
+}
+
+.task-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+}
+.todo-empty {
+  padding: 10px 0;
+  font-size: 13px;
+  color: #fff;
+}
+.task {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 0;
+  cursor: pointer;
+}
+.task-toggle {
+  width: 16px; height: 16px; flex: none;
+  border: none; border-radius: 50%;
+  box-shadow: inset 0 0 0 1.5px #fff;
+  background: transparent; color: #000; font-size: 10px; font-weight: 700;
+  cursor: pointer; display: grid; place-items: center;
+  transition: background 200ms ease, box-shadow 200ms ease;
+}
+.task:hover .task-toggle { box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 1); }
+.task.done .task-toggle { background: #fff; box-shadow: none; }
+.task-text {
+  flex: 1; font-size: 15px; line-height: 1.5;
+  color: #fff;
+  overflow-wrap: anywhere;
+  transition: color 200ms ease;
+}
+.task:hover .task-text { color: #fff; }
+.task.done .task-text { color: #fff; text-decoration: line-through; }
+.task-delete {
+  width: 24px; height: 24px; flex: none;
+  border: none; border-radius: 50%;
+  background: transparent; color: #fff; font-size: 12px;
+  cursor: pointer; opacity: 0;
+  transition: opacity 200ms ease, color 200ms ease;
+}
+.task:hover .task-delete,
+.task:focus-within .task-delete { opacity: 1; }
+.task-delete:hover { color: #fff; }
+
+.links-panel {
+  background: transparent;
+  border: none;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.75);
+}
+.section-title {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+.links-list { list-style: none; }
+
+.board-title {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.8);
+  margin: 20px 0 8px;
+}
+.links-list li { }
+.link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #fff;
+  text-decoration: none;
+  font-size: 15px;
+  line-height: 1.45;
+  padding: 5px 6px;
+  border-radius: 8px;
+  transition: background 160ms ease;
+}
+.link:hover { background: rgba(255, 255, 255, 0.18); text-decoration: underline; }
+.link-icon {
+  width: 24px; height: 24px; flex: none;
+  border-radius: 6px; object-fit: contain;
+}
+.link-icon.letter {
+  display: grid; place-items: center;
+  color: #fff; font-size: 12px; font-weight: 700;
+}
+
+.bookmark { display: flex; align-items: center; gap: 4px; }
+.bookmark .link { flex: 1; min-width: 0; }
+.link > span:last-child { min-width: 0; overflow-wrap: anywhere; }
+.bookmark-remove {
+  width: 26px; height: 26px; flex: none;
+  border: none; border-radius: 8px;
+  background: transparent; color: rgba(255, 255, 255, 0.6); font-size: 13px;
+  cursor: pointer; opacity: 0;
+  transition: opacity 160ms ease, background 160ms ease, color 160ms ease;
+}
+.bookmark:hover .bookmark-remove { opacity: 1; }
+.bookmark-remove:hover { background: rgba(255, 255, 255, 0.18); color: #fff; }
+
+.restore-links {
+  margin-top: 18px; padding: 8px 16px;
+  border: 1px dashed rgba(255, 255, 255, 0.45); border-radius: 999px;
+  background: transparent; color: #fff; font-size: 13px; cursor: pointer;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.75);
+  transition: background 160ms ease, border-color 160ms ease;
+}
+.restore-links:hover { background: rgba(255, 255, 255, 0.15); border-color: rgba(255, 255, 255, 0.75); }
+
+.sources-panel {
+  background: transparent;
+  border: none;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.75);
+}
+.sources-hint {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 10px;
+}
+.sources-hint kbd {
+  font-family: inherit;
+  font-size: 11px;
+  padding: 1px 5px;
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.18);
+}
+.sources-empty {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.5);
+  padding: 4px 6px;
+}
+
+@media (max-width: 1000px) {
+  .page { grid-template-columns: 1fr; gap: 36px; }
+}
+
+@media (max-width: 480px) {
+  .page { padding: 28px 16px 72px; }
+}

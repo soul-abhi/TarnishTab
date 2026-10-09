@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>New Tab</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <div class="page">
+
+    <section class="tasks todo-box" aria-label="Tasks">
+      <h1 class="section-title">Tasks</h1>
+      <form id="taskForm" class="task-form" autocomplete="off">
+        <input id="taskInput" type="text" placeholder="Enter to add · Shift+Enter to reload…" aria-label="New task">
+      </form>
+
+      <h2 class="todo-heading">Task You Added <span id="pendingCount" class="todo-count">0</span></h2>
+      <ul id="taskList" class="task-list" aria-label="Task You Added"></ul>
+
+      <h2 class="todo-heading">Task You Completed <span id="doneCount" class="todo-count">0</span></h2>
+      <ul id="doneList" class="task-list" aria-label="Task You Completed"></ul>
+    </section>
+
+    <section class="sources-panel" aria-label="Source">
+      <h1 class="section-title">Source</h1>
+      <p class="sources-hint">Press <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>Y</kbd> to save the active tab here.</p>
+      <ul id="sourceList" class="links-list"></ul>
+    </section>
+
+    <section class="links-panel" aria-label="Bookmarks">
+      <h1 class="section-title">Bookmarks</h1>
+      <ul id="linksList" class="links-list"></ul>
+      <button id="restoreLinksBtn" class="restore-links" type="button" hidden>Restore removed bookmarks</button>
+    </section>
+
+  </div>
+
+  <script src="js/data.js"></script>
+  <script src="js/script.js"></script>
+</body>
+</html>
