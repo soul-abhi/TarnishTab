@@ -3,6 +3,8 @@
   "name": "TarnishTab",
   "version": "2.1.0",
   "description": "A minimal New Tab page: add tasks by typing and pressing Enter, bookmark links on a custom background, and Ctrl+Shift+Y to quick-save the active site.",
+  "author": "soul-abhi",
+  "homepage_url": "https://github.com/soul-abhi",
   "permissions": [
     "storage",
     "tabs"

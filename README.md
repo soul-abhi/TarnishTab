@@ -12,6 +12,7 @@ Tasks, quick-saved sources and bookmarks in one place, on your own wallpaper.
 ![Chromium](https://img.shields.io/badge/Chromium-supported-2563eb?style=flat-square&logo=googlechrome&logoColor=white)
 ![Firefox](https://img.shields.io/badge/Firefox-121%2B-ea580c?style=flat-square&logo=firefoxbrowser&logoColor=white)
 ![Dependencies](https://img.shields.io/badge/dependencies-none-16a34a?style=flat-square)
+![License](https://img.shields.io/badge/license-MIT-0ea5e9?style=flat-square)
 ![Status](https://img.shields.io/badge/status-active%20development-a855f7?style=flat-square)
 
 [Features](#features) &nbsp;&middot;&nbsp;
@@ -19,6 +20,8 @@ Tasks, quick-saved sources and bookmarks in one place, on your own wallpaper.
 [Installation](#installation) &nbsp;&middot;&nbsp;
 [Customization](#customization) &nbsp;&middot;&nbsp;
 [Roadmap](#roadmap)
+
+Made by [@soul-abhi](https://github.com/soul-abhi)
 
 </div>
 
@@ -189,6 +192,7 @@ export again and replace the `BOOKMARKS` array with the active entries.
 
 ```text
 tarnishtab/
+├── LICENSE              MIT License
 ├── manifest.json        Extension manifest, New Tab override, shortcuts
 ├── newtab.html          Page markup
 ├── css/
@@ -238,5 +242,6 @@ Suggestions and feedback are welcome.
 
 ## License
 
-All rights reserved by the author unless a license file is added to this
-repository.
+Released under the [MIT License](LICENSE).
+
+Copyright (c) 2026 [@soul-abhi](https://github.com/soul-abhi)

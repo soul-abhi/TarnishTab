@@ -1,3 +1,5 @@
+/*! TarnishTab | (c) 2026 @soul-abhi | https://github.com/soul-abhi | MIT License */
+
 const BOOKMARKS = [
   { board: "Quick Saved", title: "Google Drive: 100GB Collection of Useful Links | by Pratik Butani | Medium", url: "https://pratikbutani.medium.com/google-drive-collection-of-useful-links-8b5b35759e2" },
   { board: "UI/UX", title: "All Online Tools in One Box | 10015 Tools", url: "https://10015.io/" },

@@ -1,3 +1,5 @@
+/*! TarnishTab | (c) 2026 @soul-abhi | https://github.com/soul-abhi | MIT License */
+
 const ext = globalThis.browser ?? globalThis.chrome;
 
 const hasChromeStorage = Boolean(ext?.storage?.local);
