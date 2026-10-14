@@ -14,13 +14,31 @@ body {
 }
 
 .page {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 48px 24px 96px;
+  width: 100%;
+  padding: 48px 32px 96px;
   display: grid;
-  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) minmax(0, 1.15fr);
-  gap: 40px;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr) minmax(0, 1fr);
+  row-gap: 40px;
+  column-gap: 80px;
   align-items: start;
+}
+
+/* Source hugs the left corner · Tasks centered · Bookmarks hugs the right corner */
+.page > .sources-panel {
+  grid-column: 1;
+  justify-self: start;
+  max-width: 420px;
+}
+.page > .tasks {
+  grid-column: 2;
+  justify-self: center;
+  width: 100%;
+  max-width: 760px;
+}
+.page > .links-panel {
+  grid-column: 3;
+  justify-self: end;
+  max-width: 420px;
 }
 
 @property --todo-angle {
@@ -349,8 +367,25 @@ body {
 .wallpaper-actions { display: flex; gap: 8px; margin-top: 6px; }
 .wallpaper-actions .wallpaper-btn { flex: 1; }
 
+@media (max-width: 1240px) and (min-width: 1001px) {
+  .page { column-gap: 48px; }
+  .todo-box { padding: 32px 24px 28px; }
+}
+
 @media (max-width: 1000px) {
-  .page { grid-template-columns: 1fr; gap: 36px; }
+  .page { grid-template-columns: 1fr; row-gap: 36px; column-gap: 0; }
+  /* Stacked: Tasks first, then Source, then Bookmarks */
+  .page > .tasks,
+  .page > .sources-panel,
+  .page > .links-panel {
+    grid-column: 1;
+    justify-self: stretch;
+    max-width: none;
+  }
+  .page > .tasks { order: 1; }
+  .page > .sources-panel { order: 2; }
+  .page > .links-panel { order: 3; }
+  .todo-box { min-height: 0; }
 }
 
 @media (max-width: 480px) {
