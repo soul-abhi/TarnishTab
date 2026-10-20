@@ -4,11 +4,13 @@
 *::before,
 *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+html { background: #4a0a0a; }
+
 body {
   min-height: 100vh;
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   color: #fff;
-  background: url("../assets/bg.jpg") center / cover no-repeat fixed, #0b0f1e;
+  background: url("../assets/bg-lilith.png") center / cover no-repeat fixed, #4a0a0a;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
