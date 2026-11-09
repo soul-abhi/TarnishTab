@@ -9,9 +9,25 @@
     "storage",
     "tabs"
   ],
+  "optional_permissions": [
+    "scripting",
+    "declarativeNetRequestWithHostAccess",
+    "https://www.youtube.com/*",
+    "https://music.youtube.com/*",
+    "https://open.spotify.com/*",
+    "https://lrclib.net/*"
+  ],
+  "optional_host_permissions": [
+    "https://www.youtube.com/*",
+    "https://music.youtube.com/*",
+    "https://open.spotify.com/*",
+    "https://lrclib.net/*"
+  ],
   "background": {
     "service_worker": "js/background.js",
     "scripts": [
+      "js/media-common.js",
+      "js/media-background.js",
       "js/background.js"
     ]
   },

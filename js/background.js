@@ -1,5 +1,9 @@
 /*! TarnishTab | (c) 2026 @soul-abhi | https://github.com/soul-abhi | MIT License */
 
+if (typeof importScripts === "function") {
+  importScripts("media-common.js", "media-background.js");
+}
+
 const api = globalThis.browser ?? globalThis.chrome;
 
 const COMMAND = "quick-save";

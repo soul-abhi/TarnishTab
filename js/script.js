@@ -130,39 +130,158 @@ function hue(name) {
 }
 
 const SOURCE_KEY = "sourceLinks";
+const SOURCE_PREVIEW_LIMIT = 5;
 const sourceList = document.getElementById("sourceList");
+const sourcesMore = document.getElementById("sourcesMore");
+const sourcesMoreCount = document.getElementById("sourcesMoreCount");
+const sourcesDrawer = document.getElementById("sourcesDrawer");
+const sourcesDrawerClose = document.getElementById("sourcesDrawerClose");
+const sourcesDrawerCount = document.getElementById("sourcesDrawerCount");
+const sourcesSearch = document.getElementById("sourcesSearch");
+const sourcesGrid = document.getElementById("sourcesGrid");
 let sourceLinks = [];
 
+function sourceEntries() {
+  return sourceLinks.flatMap((item) => {
+    if (!item || typeof item.url !== "string") return [];
+    const parsed = linkUrl(item);
+    if (!parsed) return [];
+    return [{ item: { ...item, title: String(item.title || parsed.hostname) }, parsed }];
+  });
+}
+
+function sourceRemoveButton(item) {
+  const remove = document.createElement("button");
+  remove.type = "button";
+  remove.className = "bookmark-remove";
+  remove.setAttribute("aria-label", `Remove ${item.title}`);
+  remove.textContent = "✕";
+  remove.addEventListener("click", () => {
+    sourceLinks = sourceLinks.filter((source) => source?.url !== item.url);
+    saveState(SOURCE_KEY, sourceLinks);
+    renderSources();
+  });
+  return remove;
+}
+
 function renderSources() {
+  const entries = sourceEntries();
   sourceList.replaceChildren();
-  if (sourceLinks.length === 0) {
+  sourcesMore.hidden = entries.length <= SOURCE_PREVIEW_LIMIT;
+  sourcesMoreCount.textContent = `+${Math.max(0, entries.length - SOURCE_PREVIEW_LIMIT)}`;
+  sourcesMore.setAttribute("aria-label", `Show more: view all ${entries.length} sources`);
+
+  if (entries.length === 0) {
     const empty = document.createElement("li");
     empty.className = "sources-empty";
     empty.textContent = "Nothing saved yet.";
     sourceList.append(empty);
-    return;
   }
-  for (const item of sourceLinks) {
-    const parsed = linkUrl(item);
-    if (!parsed) continue;
+
+  for (const { item, parsed } of entries.slice(0, SOURCE_PREVIEW_LIMIT)) {
     const li = document.createElement("li");
     li.className = "bookmark";
-
-    const remove = document.createElement("button");
-    remove.type = "button";
-    remove.className = "bookmark-remove";
-    remove.setAttribute("aria-label", `Remove ${item.title}`);
-    remove.textContent = "✕";
-    remove.addEventListener("click", () => {
-      sourceLinks = sourceLinks.filter((l) => l.url !== item.url);
-      saveState(SOURCE_KEY, sourceLinks);
-      renderSources();
-    });
-
-    li.append(buildLink(item, parsed), remove);
+    const link = buildLink(item, parsed);
+    link.title = `${item.title}\n${parsed.href}`;
+    li.append(link, sourceRemoveButton(item));
     sourceList.append(li);
   }
+
+  if (sourcesDrawer.open) renderSourcesDrawer(entries);
 }
+
+function renderSourcesDrawer(entries = sourceEntries()) {
+  const focusedApp = document.activeElement?.closest("#sourcesGrid .source-app");
+  const focusedUrl = focusedApp?.dataset.url;
+  const nextUrl = focusedApp?.nextElementSibling?.dataset.url ?? focusedApp?.previousElementSibling?.dataset.url;
+  const focusRemove = document.activeElement?.classList.contains("bookmark-remove");
+  const scrollTop = sourcesGrid.scrollTop;
+  const query = sourcesSearch.value.trim().toLowerCase();
+  const matches = entries.filter(({ item, parsed }) => `${item.title} ${parsed.href}`.toLowerCase().includes(query));
+
+  sourcesGrid.replaceChildren();
+  sourcesDrawerCount.textContent = query
+    ? `${matches.length} of ${entries.length} sources`
+    : `${entries.length} saved source${entries.length === 1 ? "" : "s"}`;
+
+  if (matches.length === 0) {
+    const empty = document.createElement("li");
+    empty.className = "sources-grid-empty";
+    empty.textContent = query ? "No matching sources. Try another title or URL." : "Nothing saved yet.";
+    sourcesGrid.append(empty);
+  }
+
+  for (const { item, parsed } of matches) {
+    const li = document.createElement("li");
+    li.className = "source-app";
+    li.dataset.url = parsed.href;
+
+    const link = buildLink(item, parsed);
+    link.title = `${item.title}\n${parsed.href}`;
+    const label = link.lastElementChild;
+    label.className = "source-app-label";
+    const title = document.createElement("span");
+    title.className = "source-app-title";
+    title.textContent = item.title;
+    const domain = document.createElement("span");
+    domain.className = "source-app-domain";
+    domain.textContent = parsed.hostname;
+    label.replaceChildren(title, domain);
+
+    li.append(link, sourceRemoveButton(item));
+    sourcesGrid.append(li);
+  }
+
+  if (focusedApp && sourcesDrawer.open) {
+    const apps = [...sourcesGrid.children];
+    const nextApp = apps.find((app) => app.dataset.url === focusedUrl) ?? apps.find((app) => app.dataset.url === nextUrl);
+    (nextApp?.querySelector(focusRemove ? ".bookmark-remove" : ".link") ?? sourcesSearch).focus({ preventScroll: true });
+  }
+  sourcesGrid.scrollTop = scrollTop;
+}
+
+sourcesMore.addEventListener("click", () => {
+  if (sourcesDrawer.open) return;
+  setWallpaperPanel(false);
+  sourcesSearch.value = "";
+  renderSourcesDrawer();
+  sourcesDrawer.showModal();
+  document.body.classList.add("sources-open");
+  sourcesMore.setAttribute("aria-expanded", "true");
+  sourcesGrid.scrollTop = 0;
+  sourcesSearch.focus();
+});
+
+sourcesSearch.addEventListener("input", () => {
+  sourcesGrid.scrollTop = 0;
+  renderSourcesDrawer();
+});
+
+sourcesDrawerClose.addEventListener("click", () => sourcesDrawer.close());
+
+// Search fields consume Escape to clear text; close the drawer on the first press.
+sourcesDrawer.addEventListener("keydown", (event) => {
+  if (event.key !== "Escape" || event.isComposing) return;
+  event.preventDefault();
+  event.stopPropagation();
+  sourcesDrawer.close();
+});
+
+sourcesDrawer.addEventListener("click", (event) => {
+  if (event.target !== sourcesDrawer) return;
+  const bounds = sourcesDrawer.getBoundingClientRect();
+  if (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom) {
+    sourcesDrawer.close();
+  }
+});
+
+sourcesDrawer.addEventListener("close", () => {
+  if (sourcesDrawer.open) return;
+  document.body.classList.remove("sources-open");
+  sourcesMore.setAttribute("aria-expanded", "false");
+  const target = sourcesMore.hidden ? sourceList.querySelector(".link") ?? taskInput : sourcesMore;
+  target.focus({ preventScroll: true });
+});
 
 function updateSources() {
   loadState(SOURCE_KEY).then((stored) => {
@@ -264,6 +383,8 @@ doneList.addEventListener("click", onTaskClick);
 const DRAFT_KEY = "taskDraft";
 
 document.addEventListener("keydown", (event) => {
+  if (sourcesDrawer.open) return;
+  if (event.target.closest?.("[data-media-controls]")) return;
   if (event.key !== "Enter" || !event.shiftKey) return;
   if (event.target.closest?.(".wallpaper-control")) return;
   if (event.ctrlKey || event.altKey || event.metaKey || event.isComposing) return;
@@ -275,6 +396,8 @@ document.addEventListener("keydown", (event) => {
 });
 
 document.addEventListener("keydown", (event) => {
+  if (sourcesDrawer.open) return;
+  if (event.target.closest?.("[data-media-controls]")) return;
   if (event.key === "Escape" && document.activeElement === taskInput) {
     taskInput.blur();
     return;
@@ -502,6 +625,8 @@ document.addEventListener("click", (event) => {
 });
 
 document.addEventListener("keydown", (event) => {
+  if (sourcesDrawer.open) return;
+  if (event.target.closest?.("[data-media-controls]")) return;
   if (event.key === "Escape" && !wallpaperPanel.hidden) {
     setWallpaperPanel(false);
     wallpaperToggle.focus();

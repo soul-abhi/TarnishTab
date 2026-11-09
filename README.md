@@ -5,7 +5,7 @@
 # TarnishTab ||GIVE A STAR
 
 A fast, keyboard-first New Tab page for Chromium browsers and Firefox.
-Tasks, quick-saved sources and bookmarks in one place, on your own wallpaper.
+Tasks, quick-saved sources, bookmarks and music controls on your own wallpaper.
 
 ![Manifest](https://img.shields.io/badge/Manifest-V3-1f2937?style=flat-square)
 ![Version](https://img.shields.io/badge/version-2.1.0-1f2937?style=flat-square)
@@ -16,6 +16,7 @@ Tasks, quick-saved sources and bookmarks in one place, on your own wallpaper.
 ![Status](https://img.shields.io/badge/status-active%20development-a855f7?style=flat-square)
 
 [Features](#features) &nbsp;&middot;&nbsp;
+[Music](#music) &nbsp;&middot;&nbsp;
 [Keyboard Shortcuts](#keyboard-shortcuts) &nbsp;&middot;&nbsp;
 [Installation](#installation) &nbsp;&middot;&nbsp;
 [Customization](#customization) &nbsp;&middot;&nbsp;
@@ -37,7 +38,7 @@ runs in Chrome, Edge, Brave, Vivaldi, Arc and Firefox.
 | Column | Purpose |
 | :--- | :--- |
 | **Tasks** | A lightweight to-do list. Type, press Enter, done. |
-| **Source** | Pages you saved from anywhere in the browser with a single shortcut. |
+| **Source & Music** | Quick-saved pages above; a compact music-tab controller below. |
 | **Bookmarks** | Your curated links, grouped by board, each with its site icon. |
 
 On smaller screens the columns stack into a single column.
@@ -55,7 +56,17 @@ On smaller screens the columns stack into a single column.
 - Save the active tab from any website with <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>Y</kbd>.
 - Newest entries appear first and duplicate URLs are merged.
 - Open New Tab pages refresh automatically when something is saved.
+- The panel shows the 5 newest links, keeping long titles on one line.
+- **Show more** opens a searchable, app-launcher-style drawer with all saved sources. Close it with **Esc**, the close button, or a click outside.
 - Keeps up to 200 entries.
+
+**Music**
+- A compact bottom-left player, below Sources without covering saved links.
+- Automatically detects playing YouTube, YouTube Music or Spotify tabs after separate one-time access for each site.
+- Artwork, track details, play/pause, previous/next, seeking, volume and mute where the site supports them.
+- Select a music tab when several are open; click the artwork or title to return to it.
+- Inline, opt-in lyrics from LRCLIB, with timed highlighting, click-to-seek and a plain-lyrics fallback.
+- **Play here** keeps supported YouTube songs playing in New Tab after the source tab closes. Otherwise, playback stays in the original music tab.
 
 **Bookmarks**
 - Grouped by board, in the order they are defined.
@@ -79,6 +90,50 @@ On smaller screens the columns stack into a single column.
 - Data is saved in extension storage and mirrored to `localStorage`,
   so it survives browser restarts.
 
+## Music
+
+1. Reload the extension after updating its files, then open a new tab.
+2. Start a song in a **YouTube**, **YouTube Music** or **Spotify** browser tab, then return to New Tab. Sign in on the music site itself if needed.
+3. If prompted, choose **Allow YouTube Music** (or the matching site) and approve access once. No music-site access is required at installation.
+4. Playing songs appear automatically, including when YouTube Music stays on its home page. There is no routine Connect step.
+5. Use the player controls. To open a music site, change access or choose a particular **Music tab**, open **Music settings** with the settings button.
+
+Detection prefers audible playing music over paused tabs. Keep the original
+music tab open when the player says **In its tab**. Desktop/mobile music apps
+are not detected. **Remove access** in Music settings disables that site's
+connector without closing its tab or stopping its playback.
+
+### Play here
+
+For a supported YouTube or YouTube Music song, choose **Play here** to use the
+visible YouTube player inside New Tab. This requests separate optional YouTube
+player-identification access; it does not enable reading your YouTube tabs.
+The new player is checked while muted before the original song is paused.
+
+- Once **In New Tab** appears, you may close the original music tab. **Keep this New Tab open**; closing or reloading it stops playback here.
+- **Back to tab** pauses local playback before returning to the matching original song, or opening it again if the source tab was closed.
+- **Stop playback here** stops the embedded player; it does not automatically resume the original tab.
+- Only the selected song transfers. YouTube Music queues, account features and Spotify playback do not transfer.
+- Some songs cannot be embedded. Live streams, ads, unavailable video IDs and provider restrictions can make **Play here** unavailable or fail safely.
+
+This does not bypass subscriptions, DRM, advertisements or provider playback
+rules. Controls may be unavailable for some tracks or accounts. If a provider
+changes its interface, use the music site's own controls.
+
+### Lyrics
+
+Lyrics flow inline below the player, not in a popup. Choose **Enable lyrics**
+to allow anonymous LRCLIB lookups; **Flow** shows or hides the panel.
+The lookup sends the song title, artist and duration, not account credentials,
+tasks or saved sources. As with any web request, LRCLIB receives your IP address.
+
+- Timed lyrics follow the current line. Click a line to seek when seeking is supported.
+- Scroll manually to stop following; use **Follow lyrics** to resume.
+- If a match is wrong or missing, open **Lyrics settings**, edit **Song** and **Artist**, then choose **Find lyrics**. YouTube video titles may need correction.
+- Songs without timestamps show plain lyrics. Instrumental and unavailable tracks are labelled honestly.
+- Lookups are requested only while the panel is on screen. Hiding Flow, scrolling it off screen, opening a modal, leaving New Tab or disabling lyrics cancels pending lookups; a request already sent cannot be recalled.
+- **Disable lyrics & remove access** in Lyrics settings removes LRCLIB access. Flow and follow preferences are remembered separately.
+
 ## Keyboard Shortcuts
 
 The page is designed to be used without a mouse. These are the shortcuts
@@ -97,7 +152,7 @@ available today.
 | :--- | :--- |
 | <kbd>Enter</kbd> | Add the typed task |
 | <kbd>Shift</kbd> + <kbd>Enter</kbd> | Reload the page and return focus to the task box (your draft is kept) |
-| <kbd>Esc</kbd> | Leave the task box, or close the wallpaper panel |
+| <kbd>Esc</kbd> | Leave the task box, or close Sources, Music settings or wallpaper |
 | <kbd>Shift</kbd> + <kbd>K</kbd> | Complete the focused task, or the top pending task if none is focused |
 | <kbd>Shift</kbd> + <kbd>W</kbd> | Open or close the wallpaper panel |
 | <kbd>Tab</kbd> / <kbd>Shift</kbd> + <kbd>Tab</kbd> | Move between tasks, links and buttons |
@@ -158,7 +213,8 @@ set to `false`.
 ### Updating after changes
 
 Edit any file, then press the reload button on the extension's card in the
-extensions page. Your tasks and saved sources are kept.
+extensions page. Your tasks and saved sources are kept. Reopen New Tab;
+refresh an existing music tab if it still has an older connector loaded.
 
 ## Customization
 
@@ -217,13 +273,22 @@ tarnishtab/
 ├── manifest.json        Extension manifest, New Tab override, shortcuts
 ├── newtab.html          Page markup
 ├── css/
-│   └── style.css        Layout, theme and animations
+│   ├── style.css        Layout, theme and animations
+│   └── media.css        Glass music player, inline lyrics and settings
 ├── js/
 │   ├── background.js    Background worker for the global shortcuts
 │   ├── data.js          Bookmark list
-│   └── script.js        Tasks, Source and Bookmarks logic
+│   ├── media-common.js  Provider allowlist, metadata and lyric parsing
+│   ├── media-content.js Music-site playback adapters
+│   ├── media-background.js Optional access, controls and LRCLIB requests
+│   ├── media-player.js  Visible YouTube iframe and playback controls
+│   ├── media.js         Automatic detection, playback transfer and inline lyrics
+│   └── script.js        Tasks, Source, Bookmarks and wallpaper logic
+├── tests/
+│   ├── media.test.cjs   Dependency-free media and permission tests
+│   └── media-player.test.cjs YouTube controls, message validation and cleanup tests
 └── assets/
-    ├── bg.jpg           Wallpaper
+    ├── bg-lilith.png    Default wallpaper
     └── Icon-*.png       Extension icons (16, 48, 64)
 ```
 
@@ -231,11 +296,40 @@ tarnishtab/
 
 | Permission | Why it is needed |
 | :--- | :--- |
-| `storage` | Saves tasks, hidden bookmarks, quick-saved sources and wallpaper settings |
-| `tabs` | Reads the title and URL of the active tab when you use quick-save |
+| `storage` | Saves tasks, hidden bookmarks, quick-saved sources, wallpaper and music preferences |
+| `tabs` | Reads the active tab for quick-save and discovers supported music sites and their audible status; song details require separate site approval |
 
-No host permissions are requested and no data leaves your browser, apart
-from the favicon requests used to display site icons.
+Optional permissions are requested only through a site's **Allow** button,
+**Enable lyrics** or **Play here**:
+
+| Optional access | Why it is needed |
+| :--- | :--- |
+| `scripting` | Runs the bundled playback connector in a music tab |
+| `declarativeNetRequestWithHostAccess` | Identifies only the selected YouTube embed with a session-scoped Referer header, restricted to its New Tab, video ID and iframe request; requested only by Play here |
+| `https://www.youtube.com/*` | Enables YouTube playback here; reading track details and controlling YouTube tabs additionally require explicit music-site approval |
+| `https://music.youtube.com/*` | Reads track details and operates YouTube Music playback controls |
+| `https://open.spotify.com/*` | Reads track details and operates Spotify web playback controls |
+| `https://lrclib.net/*` | Fetches lyrics after separate consent; no music-account authentication is used |
+
+The same optional host patterns also appear in `optional_permissions` for
+Firefox 121–127 compatibility. Modern browsers use `optional_host_permissions`.
+Neither declaration grants access without approval.
+
+Tasks and saved sources stay in browser storage. Network requests include
+Google's favicon service for link icons, any wallpaper URL you choose,
+provider artwork after music-site approval, YouTube when you choose Play here,
+and LRCLIB when lyrics are enabled and on screen. The YouTube player uses its
+own provider network requests and playback policies. Lyrics are cached briefly
+in background memory, not saved as a
+listening history. The extension does not read account passwords or tokens.
+
+## Verification
+
+Run the dependency-free unit and permission tests with Node.js:
+
+```sh
+node --test tests/*.test.cjs
+```
 
 ## Troubleshooting
 
@@ -247,6 +341,12 @@ from the favicon requests used to display site icons.
 | Bookmarks do not appear | Check that `js/data.js` loads without errors. Inspect the page from the extension card (*Inspect views: newtab.html*) |
 | Quick-save does nothing | Another extension may own the shortcut. Reassign it from the shortcuts page |
 | Quick-save ignores a page | Only `http` and `https` pages can be saved |
+| Music shows nothing playing | Start a song in a supported browser tab and allow that site's access once. After an update, reload the extension, reopen New Tab and refresh the existing music tab. Desktop/mobile apps are not detected |
+| YouTube Music is playing but is not detected | Use Allow YouTube Music if shown, or check its access in Music settings. Refresh music.youtube.com after reloading the extension; song changes are then detected automatically |
+| A music control is disabled or fails | The track or site's current interface may not support it. Refresh the music tab after reloading the extension, or use the site's own controls |
+| Play here fails or is unavailable | The song needs a valid YouTube video ID and must permit embedded playback. Approve optional player access, keep the visible player on screen during setup, or use the original music tab |
+| Lyrics are missing or wrong | Correct the song title and artist. Not every song has lyrics or timing in LRCLIB |
+| Lyrics cannot be reached | Check your connection and LRCLIB access; wait before retrying if the service is busy |
 
 ## Roadmap
 

@@ -8,6 +8,7 @@
   <meta name="copyright" content="(c) 2026 soul-abhi. MIT License.">
   <title>New Tab</title>
   <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/media.css">
 </head>
 <body>
 
@@ -15,11 +16,111 @@
 
   <div class="page">
 
-    <section class="sources-panel" aria-label="Source">
-      <h1 class="section-title">Source</h1>
-      <p class="sources-hint">Press <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>Y</kbd> to save the active tab here.</p>
-      <ul id="sourceList" class="links-list"></ul>
-    </section>
+    <div class="left-column">
+      <section class="sources-panel" aria-label="Source">
+        <h1 class="section-title">Source</h1>
+        <p class="sources-hint">Press <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>Y</kbd> to save the active tab here.</p>
+        <ul id="sourceList" class="links-list"></ul>
+        <button id="sourcesMore" class="sources-more" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="sourcesDrawer" hidden>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+            <rect x="1" y="1" width="5" height="5" rx="1"></rect>
+            <rect x="10" y="1" width="5" height="5" rx="1"></rect>
+            <rect x="1" y="10" width="5" height="5" rx="1"></rect>
+            <rect x="10" y="10" width="5" height="5" rx="1"></rect>
+          </svg>
+          Show more <span id="sourcesMoreCount" class="sources-more-count" aria-hidden="true"></span>
+        </button>
+      </section>
+
+      <section id="mediaPanel" class="media-panel" aria-label="Music player" data-media-controls>
+        <img id="mediaAmbient" class="media-ambient" alt="" aria-hidden="true" referrerpolicy="no-referrer" hidden>
+        <header class="media-header">
+          <h2><span id="mediaHeading">Your music</span><span id="mediaWave" class="media-wave" aria-hidden="true" hidden><i></i><i></i><i></i><i></i></span></h2>
+          <div class="media-header-tools">
+            <span class="media-provider-badge"><span class="media-provider-dot" aria-hidden="true"></span><span id="mediaProviderName">Auto-detect</span></span>
+            <button id="mediaSettingsButton" class="media-icon-button media-settings-button" type="button" aria-label="Music settings" title="Music settings" aria-haspopup="dialog" aria-controls="mediaSettingsDialog" aria-expanded="false"><svg class="media-icon" aria-hidden="true"><use href="#media-settings"></use></svg></button>
+          </div>
+        </header>
+
+        <div class="media-track">
+          <button id="mediaArtworkButton" class="media-artwork" type="button" aria-label="Open the music tab" disabled>
+            <img id="mediaArtwork" alt="" referrerpolicy="no-referrer" hidden>
+            <span id="mediaArtworkPlaceholder" class="media-record" aria-hidden="true"><span></span></span>
+          </button>
+          <div class="media-track-info">
+            <button id="mediaTitle" class="media-track-title" type="button" title="Open the music tab" disabled>Nothing playing</button>
+            <p id="mediaArtist" class="media-track-artist">Start a song. We'll find it.</p>
+          </div>
+        </div>
+
+        <div class="media-timeline">
+          <input id="mediaSeek" class="media-range" type="range" min="0" max="1000" value="0" aria-label="Song position" disabled>
+          <div class="media-times"><span id="mediaPosition">--:--</span><span id="mediaDuration">--:--</span></div>
+        </div>
+
+        <div class="media-controls">
+          <button id="mediaLyrics" class="media-flow-button" type="button" aria-label="Hide lyrics flow" title="Hide lyrics flow" aria-controls="mediaLyricsPanel" aria-pressed="true" disabled>
+            <svg class="media-icon" aria-hidden="true"><use href="#media-lyrics"></use></svg><span>Flow</span>
+          </button>
+          <div class="media-transport">
+            <button id="mediaPrevious" class="media-icon-button" type="button" aria-label="Previous track" title="Previous track" disabled><svg class="media-icon" aria-hidden="true"><use href="#media-previous"></use></svg></button>
+            <button id="mediaPlay" class="media-play" type="button" aria-label="Play" title="Play" disabled><svg class="media-icon" aria-hidden="true"><use id="mediaPlayIcon" href="#media-play"></use></svg></button>
+            <button id="mediaNext" class="media-icon-button" type="button" aria-label="Next track" title="Next track" disabled><svg class="media-icon" aria-hidden="true"><use href="#media-next"></use></svg></button>
+          </div>
+          <div class="media-volume-control">
+            <button id="mediaMute" class="media-icon-button" type="button" aria-label="Mute" title="Mute" disabled><svg class="media-icon" aria-hidden="true"><use id="mediaVolumeIcon" href="#media-volume"></use></svg></button>
+            <input id="mediaVolume" class="media-range" type="range" min="0" max="100" value="100" aria-label="Volume" disabled>
+          </div>
+        </div>
+        <div id="mediaPlaybackMode" class="media-playback-mode" hidden>
+          <span id="mediaPlaybackLabel">In its tab</span>
+          <button id="mediaPlayHere" class="media-here-button" type="button" hidden><svg class="media-icon" aria-hidden="true"><use href="#media-play"></use></svg>Play here</button>
+          <button id="mediaReturn" class="media-here-button" type="button" hidden>Back to tab</button>
+        </div>
+        <div id="mediaAccess" class="media-access" hidden>
+          <p id="mediaAccessHint">Allow music-site access once. Detection is automatic after that.</p>
+          <button id="mediaAllow" class="media-button" type="button">Allow music access</button>
+        </div>
+        <p id="mediaStatus" class="media-status" role="status">Looking for music in your browser.</p>
+
+        <section id="mediaEmbedPanel" class="media-embed-panel" aria-label="YouTube playback in New Tab" hidden>
+          <header class="media-embed-header"><h3>Playing here</h3><button id="mediaEmbedClose" class="media-icon-button" type="button" aria-label="Stop playback here" title="Stop playback here"><svg class="media-icon" aria-hidden="true"><use href="#media-close"></use></svg></button></header>
+          <div id="mediaEmbedHost" class="media-embed-host"></div>
+          <p id="mediaEmbedStatus" class="media-embed-status" role="status">Keep this New Tab open. YouTube's playback rules still apply.</p>
+        </section>
+
+        <section id="mediaLyricsPanel" class="media-lyrics-panel" aria-labelledby="mediaLyricsTitle" aria-describedby="lyricsTrack" data-state="ready" hidden>
+          <header class="lyrics-header">
+            <div class="lyrics-heading"><h3 id="mediaLyricsTitle">Lyrics</h3><span id="lyricsMode" class="lyrics-mode">Flow</span></div>
+            <button id="lyricsFollow" class="lyrics-follow" type="button" aria-pressed="true" title="Pause following" hidden>Following</button>
+          </header>
+          <p id="lyricsTrack" class="media-sr-only">Your current track</p>
+
+          <div id="lyricsConsent" class="lyrics-consent">
+            <h4>Let the lyrics flow.</h4>
+            <p>Follow the song, right here.</p>
+            <button id="lyricsEnable" class="media-button primary" type="button">Enable lyrics</button>
+            <p class="lyrics-privacy">Song title, artist and duration are sent to LRCLIB while this panel is on screen. No account details.</p>
+          </div>
+
+          <p id="lyricsStatus" class="lyrics-status" role="status"></p>
+          <div id="lyricsScroll" class="lyrics-scroll" tabindex="0" aria-label="Song lyrics. Scroll to browse, or select a timed line to seek." hidden><ol id="lyricsLines" class="lyrics-lines"></ol></div>
+
+          <footer id="lyricsFooter" class="lyrics-footer" hidden>
+            <a href="https://lrclib.net/" target="_blank" rel="noopener noreferrer">LRCLIB</a>
+            <details id="lyricsSettings" class="lyrics-settings">
+              <summary><svg class="media-icon" aria-hidden="true"><use href="#media-settings"></use></svg>Lyrics settings</summary>
+              <form id="lyricsForm" class="lyrics-form" autocomplete="off" hidden>
+                <label>Song<input id="lyricsSong" type="text" maxlength="200" required></label>
+                <label>Artist<input id="lyricsArtist" type="text" maxlength="200" required></label>
+                <button id="lyricsFind" class="media-button" type="submit">Find lyrics</button>
+              </form>
+              <button id="lyricsDisable" class="lyrics-disable" type="button">Disable lyrics &amp; remove access</button>
+            </details>
+          </footer>
+        </section>
+      </section>
+    </div>
 
     <section class="tasks todo-box" aria-label="Tasks">
       <h1 class="section-title">Tasks</h1>
@@ -41,6 +142,55 @@
     </section>
 
   </div>
+
+  <dialog id="sourcesDrawer" class="sources-drawer" aria-labelledby="sourcesDrawerTitle" aria-describedby="sourcesDrawerCount">
+    <header class="sources-drawer-header">
+      <div>
+        <h2 id="sourcesDrawerTitle" class="sources-drawer-title">All sources</h2>
+        <p id="sourcesDrawerCount" class="sources-drawer-count" role="status"></p>
+      </div>
+      <button id="sourcesDrawerClose" class="sources-drawer-close" type="button" aria-label="Close sources">&#10005;</button>
+    </header>
+    <label class="sources-search">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <circle cx="10.5" cy="10.5" r="6.5"></circle>
+        <path d="m16 16 5 5"></path>
+      </svg>
+      <input id="sourcesSearch" type="search" placeholder="Search by title or URL" aria-label="Search saved sources" autocomplete="off" spellcheck="false" autofocus>
+    </label>
+    <ul id="sourcesGrid" class="sources-grid" aria-label="All saved sources"></ul>
+  </dialog>
+
+  <dialog id="mediaSettingsDialog" class="media-dialog media-settings-dialog" aria-labelledby="mediaSettingsTitle" data-media-controls>
+    <header class="media-dialog-header">
+      <div><h2 id="mediaSettingsTitle">Music settings</h2><p>Your playing music appears automatically.</p></div>
+      <button class="media-icon-button media-dialog-close" type="button" aria-label="Close music settings" data-close-dialog><svg class="media-icon" aria-hidden="true"><use href="#media-close"></use></svg></button>
+    </header>
+    <p class="media-permission-note">Allow the sites you use once; there's no need to reconnect. The bundled connector reads music details and controls playback, not account passwords.</p>
+    <ul id="mediaProviders" class="media-provider-list"></ul>
+    <label class="media-tab-label" for="mediaTabSelect">Music tab</label>
+    <select id="mediaTabSelect" class="media-tab-select" disabled><option>No music playing</option></select>
+    <p id="mediaConnectionStatus" class="media-connection-status" role="status">YouTube, YouTube Music and Spotify browser tabs are supported. Desktop and mobile apps aren't detected.</p>
+  </dialog>
+
+  <svg class="media-icons" width="0" height="0" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <symbol id="media-play" viewBox="0 0 24 24"><path d="m9 5 11 7-11 7z" fill="currentColor"></path></symbol>
+      <symbol id="media-pause" viewBox="0 0 24 24"><path d="M7 5h4v14H7zm6 0h4v14h-4z" fill="currentColor"></path></symbol>
+      <symbol id="media-previous" viewBox="0 0 24 24"><path d="M5 5h2v14H5zm14 0v14L8 12z" fill="currentColor"></path></symbol>
+      <symbol id="media-next" viewBox="0 0 24 24"><path d="M17 5h2v14h-2zM5 5l11 7-11 7z" fill="currentColor"></path></symbol>
+      <symbol id="media-volume" viewBox="0 0 24 24"><path d="M11 5 6 9H3v6h3l5 4z" fill="currentColor"></path><path d="M15 8a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"></path></symbol>
+      <symbol id="media-muted" viewBox="0 0 24 24"><path d="M11 5 6 9H3v6h3l5 4z" fill="currentColor"></path><path d="m16 9 6 6m0-6-6 6" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"></path></symbol>
+      <symbol id="media-chevron" viewBox="0 0 24 24"><path d="m7 10 5 5 5-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></symbol>
+      <symbol id="media-close" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></symbol>
+      <symbol id="media-external" viewBox="0 0 24 24"><path d="M14 4h6v6m0-6-10 10m-3-9H4v15h15v-7" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></path></symbol>
+      <symbol id="media-lyrics" viewBox="0 0 24 24"><path d="M4 5h16M4 10h11M4 15h16M4 20h11" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path></symbol>
+      <symbol id="media-settings" viewBox="0 0 24 24"><path d="M4 7h4m4 0h8M4 17h8m4 0h4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"></path><circle cx="10" cy="7" r="2" fill="none" stroke="currentColor" stroke-width="1.7"></circle><circle cx="14" cy="17" r="2" fill="none" stroke="currentColor" stroke-width="1.7"></circle></symbol>
+      <symbol id="media-youtube" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="5" fill="currentColor"></rect><path d="m10 8 7 4-7 4z" fill="#101116"></path></symbol>
+      <symbol id="media-youtubeMusic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="currentColor"></circle><circle cx="12" cy="12" r="8" fill="none" stroke="#101116" stroke-width="1"></circle><path d="m10 7 7 5-7 5z" fill="#101116"></path></symbol>
+      <symbol id="media-spotify" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="currentColor"></circle><path d="M6 8c4-1 8-1 12 1M7 12c3-1 7-1 10 1m-9 3c3-1 5-1 8 1" fill="none" stroke="#101116" stroke-width="1.8" stroke-linecap="round"></path></symbol>
+    </defs>
+  </svg>
 
   <div class="wallpaper-control">
     <div id="wallpaperPanel" class="wallpaper-panel" role="dialog" aria-label="Wallpaper" hidden>
@@ -70,5 +220,8 @@
 
   <script src="js/data.js"></script>
   <script src="js/script.js"></script>
+  <script src="js/media-common.js"></script>
+  <script src="js/media-player.js"></script>
+  <script src="js/media.js"></script>
 </body>
 </html>
