@@ -130,10 +130,7 @@ function hue(name) {
 }
 
 const SOURCE_KEY = "sourceLinks";
-const SOURCE_PREVIEW_LIMIT = 5;
-const sourceList = document.getElementById("sourceList");
-const sourcesMore = document.getElementById("sourcesMore");
-const sourcesMoreCount = document.getElementById("sourcesMoreCount");
+const sourcesButton = document.getElementById("sourcesButton");
 const sourcesDrawer = document.getElementById("sourcesDrawer");
 const sourcesDrawerClose = document.getElementById("sourcesDrawerClose");
 const sourcesDrawerCount = document.getElementById("sourcesDrawerCount");
@@ -166,27 +163,7 @@ function sourceRemoveButton(item) {
 
 function renderSources() {
   const entries = sourceEntries();
-  sourceList.replaceChildren();
-  sourcesMore.hidden = entries.length <= SOURCE_PREVIEW_LIMIT;
-  sourcesMoreCount.textContent = `+${Math.max(0, entries.length - SOURCE_PREVIEW_LIMIT)}`;
-  sourcesMore.setAttribute("aria-label", `Show more: view all ${entries.length} sources`);
-
-  if (entries.length === 0) {
-    const empty = document.createElement("li");
-    empty.className = "sources-empty";
-    empty.textContent = "Nothing saved yet.";
-    sourceList.append(empty);
-  }
-
-  for (const { item, parsed } of entries.slice(0, SOURCE_PREVIEW_LIMIT)) {
-    const li = document.createElement("li");
-    li.className = "bookmark";
-    const link = buildLink(item, parsed);
-    link.title = `${item.title}\n${parsed.href}`;
-    li.append(link, sourceRemoveButton(item));
-    sourceList.append(li);
-  }
-
+  sourcesButton.setAttribute("aria-label", `Sources: view all ${entries.length} saved source${entries.length === 1 ? "" : "s"}`);
   if (sourcesDrawer.open) renderSourcesDrawer(entries);
 }
 
@@ -207,7 +184,7 @@ function renderSourcesDrawer(entries = sourceEntries()) {
   if (matches.length === 0) {
     const empty = document.createElement("li");
     empty.className = "sources-grid-empty";
-    empty.textContent = query ? "No matching sources. Try another title or URL." : "Nothing saved yet.";
+    empty.textContent = query ? "No matching sources. Try another title or URL." : "Nothing saved yet. Press Ctrl+Shift+Y on a website to save it here.";
     sourcesGrid.append(empty);
   }
 
@@ -240,14 +217,14 @@ function renderSourcesDrawer(entries = sourceEntries()) {
   sourcesGrid.scrollTop = scrollTop;
 }
 
-sourcesMore.addEventListener("click", () => {
+sourcesButton.addEventListener("click", () => {
   if (sourcesDrawer.open) return;
   setWallpaperPanel(false);
   sourcesSearch.value = "";
   renderSourcesDrawer();
   sourcesDrawer.showModal();
   document.body.classList.add("sources-open");
-  sourcesMore.setAttribute("aria-expanded", "true");
+  sourcesButton.setAttribute("aria-expanded", "true");
   sourcesGrid.scrollTop = 0;
   sourcesSearch.focus();
 });
@@ -278,9 +255,8 @@ sourcesDrawer.addEventListener("click", (event) => {
 sourcesDrawer.addEventListener("close", () => {
   if (sourcesDrawer.open) return;
   document.body.classList.remove("sources-open");
-  sourcesMore.setAttribute("aria-expanded", "false");
-  const target = sourcesMore.hidden ? sourceList.querySelector(".link") ?? taskInput : sourcesMore;
-  target.focus({ preventScroll: true });
+  sourcesButton.setAttribute("aria-expanded", "false");
+  sourcesButton.focus({ preventScroll: true });
 });
 
 function updateSources() {

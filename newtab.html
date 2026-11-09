@@ -17,18 +17,12 @@
   <div class="page">
 
     <div class="left-column">
-      <section class="sources-panel" aria-label="Source">
-        <h1 class="section-title">Source</h1>
-        <p class="sources-hint">Press <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>Y</kbd> to save the active tab here.</p>
-        <ul id="sourceList" class="links-list"></ul>
-        <button id="sourcesMore" class="sources-more" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="sourcesDrawer" hidden>
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-            <rect x="1" y="1" width="5" height="5" rx="1"></rect>
-            <rect x="10" y="1" width="5" height="5" rx="1"></rect>
-            <rect x="1" y="10" width="5" height="5" rx="1"></rect>
-            <rect x="10" y="10" width="5" height="5" rx="1"></rect>
+      <section class="sources-panel" aria-label="Sources">
+        <button id="sourcesButton" class="sources-button" type="button" aria-label="Sources: view all saved sources" aria-haspopup="dialog" aria-expanded="false" aria-controls="sourcesDrawer" title="Open saved sources. Press Ctrl+Shift+Y on a website to save it.">
+          <span>Sources</span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M6 18 18 6M6 6h12v12"></path>
           </svg>
-          Show more <span id="sourcesMoreCount" class="sources-more-count" aria-hidden="true"></span>
         </button>
       </section>
 

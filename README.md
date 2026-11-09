@@ -38,7 +38,7 @@ runs in Chrome, Edge, Brave, Vivaldi, Arc and Firefox.
 | Column | Purpose |
 | :--- | :--- |
 | **Tasks** | A lightweight to-do list. Type, press Enter, done. |
-| **Source & Music** | Quick-saved pages above; a compact music-tab controller below. |
+| **Sources & Music** | Saved pages in a drawer; a compact music-tab controller below. |
 | **Bookmarks** | Your curated links, grouped by board, each with its site icon. |
 
 On smaller screens the columns stack into a single column.
@@ -52,12 +52,12 @@ On smaller screens the columns stack into a single column.
 - Live counters for pending and completed tasks.
 - A half-typed task is kept when the page reloads.
 
-**Source (quick-save)**
+**Sources (quick-save)**
 - Save the active tab from any website with <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>Y</kbd>.
 - Newest entries appear first and duplicate URLs are merged.
 - Open New Tab pages refresh automatically when something is saved.
-- The panel shows the 5 newest links, keeping long titles on one line.
-- **Show more** opens a searchable, app-launcher-style drawer with all saved sources. Close it with **Esc**, the close button, or a click outside.
+- No saved URLs are shown inline. **Sources** is a white, underlined drawer button with an up-right arrow.
+- Select **Sources** to open a searchable, app-launcher-style drawer with all saved URLs, even when the collection is empty. Close it with **Esc**, the close button, or a click outside.
 - Keeps up to 200 entries.
 
 **Music**
@@ -143,7 +143,7 @@ available today.
 
 | Shortcut | macOS | Action |
 | :--- | :--- | :--- |
-| <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>Y</kbd> | <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>Y</kbd> | Save the current tab to the **Source** panel |
+| <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>Y</kbd> | <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>Y</kbd> | Save the current tab to the **Sources** drawer |
 | <kbd>Alt</kbd> + <kbd>Shift</kbd> + <kbd>T</kbd> | <kbd>Alt</kbd> + <kbd>Shift</kbd> + <kbd>T</kbd> | On the New Tab page, move focus from the address bar to the task box |
 
 ### On the New Tab page

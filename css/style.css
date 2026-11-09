@@ -244,50 +244,26 @@ body {
   border: none;
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.75);
 }
-.sources-hint {
-  font-size: 12px;
-  color: rgba(255, 255, 255, 0.7);
-  margin-bottom: 10px;
-}
-.sources-hint kbd {
-  font-family: inherit;
-  font-size: 11px;
-  padding: 1px 5px;
-  border-radius: 5px;
-  background: rgba(255, 255, 255, 0.18);
-}
-.sources-empty {
-  font-size: 13px;
-  color: rgba(255, 255, 255, 0.5);
-  padding: 4px 6px;
-}
-.sources-panel .link > span:last-child {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.sources-panel .bookmark:focus-within .bookmark-remove { opacity: 1; }
-.sources-more {
+.sources-button {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  margin-top: 16px;
-  padding: 10px 14px;
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  border-radius: 10px;
-  background: rgba(0, 0, 0, 0.35);
-  -webkit-backdrop-filter: blur(8px);
-  backdrop-filter: blur(8px);
+  min-height: 44px;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  background: transparent;
   color: #fff;
   font: inherit;
-  font-size: 13px;
+  font-size: 20px;
+  font-weight: 500;
+  white-space: nowrap;
   cursor: pointer;
-  text-shadow: none;
-  transition: background 160ms ease;
+  text-shadow: inherit;
 }
-.sources-more[hidden] { display: none; }
-.sources-more:hover { background: rgba(0, 0, 0, 0.55); }
-.sources-more-count { color: rgba(255, 255, 255, 0.65); font-variant-numeric: tabular-nums; }
+.sources-button span { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 5px; }
+.sources-button:hover span { text-decoration-thickness: 2px; }
+.sources-button svg { flex: none; }
 
 body.sources-open { overflow: hidden; }
 .sources-drawer {
@@ -432,10 +408,8 @@ body.sources-open { overflow: hidden; }
   font-size: 14px;
   text-align: center;
 }
-.sources-more:focus-visible,
+.sources-button:focus-visible,
 .sources-drawer-close:focus-visible,
-.sources-panel .link:focus-visible,
-.sources-panel .bookmark-remove:focus-visible,
 .source-app .link:focus-visible,
 .source-app .bookmark-remove:focus-visible {
   outline: 2px solid rgba(255, 255, 255, 0.85);
@@ -454,7 +428,6 @@ body.sources-open { overflow: hidden; }
   .sources-drawer::backdrop { animation: none; }
 }
 @media (hover: none) {
-  .sources-panel .bookmark-remove,
   .source-app .bookmark-remove { opacity: 1; }
 }
 @media (max-width: 600px) {
